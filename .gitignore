@@ -1,0 +1,25 @@
+# Ignore Python virtual environments
+venv/
+
+# Ignore environment variables and credentials
+.env
+firebase_credentials.json
+
+# Ignore dependencies
+node_modules/
+public/
+
+# Ignore compiled Python files
+*.pyc
+
+# Ignore build artifacts for React frontend
+build/
+dist/
+
+# Ignore IDE/editor settings
+.vscode/
+.idea/
+
+# Ignore OS-specific files
+.DS_Store   # macOS specific
+Thumbs.db   # Windows specific
