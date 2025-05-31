@@ -23,3 +23,9 @@ dist/
 # Ignore OS-specific files
 .DS_Store   # macOS specific
 Thumbs.db   # Windows specific
+
+
+__pycache__/
+temp/
+test.py
+*.mp4
