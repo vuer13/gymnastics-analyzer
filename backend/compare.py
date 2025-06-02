@@ -52,3 +52,13 @@ def save(results, output = 'results/compare_results.json')    :
             json.dump(results, f, indent = 2)
     except Exception as e:
         print("Unable to save")
+        return None
+        
+def load_reference_landmarks(file_path="ref_landmarks.json"):
+    try:
+        with open(file_path, "r") as f:
+            data = json.load(f)
+        return data.get("frames", data)  
+    except Exception as e:
+        print(f"Error loading reference landmarks: {e}")
+        return None
