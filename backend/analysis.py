@@ -57,6 +57,23 @@ def analyze_json(video_data):
     
     fps = 30
     
+    cap = cv2.VideoCapture(file_path)
+
+    if cap.isOpened():
+        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        
+    cap.release()
+    
+    data = {
+        'fps': fps,
+        'frames': [],
+        'video_path': file_path,
+        'dimensions': {
+            'original': {'width': width, 'height': height},
+        }
+    }
+    
     for frame_num, frame in enumerate(video_array):
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = mp_pose_inst.process(rgb_frame)
@@ -67,11 +84,11 @@ def analyze_json(video_data):
             frames.append(annotated_frame)
             
             frame_landmarks = {
-                'fps': fps,
                 'frame_num': frame_num,
                 'time': time,
                 'landmarks': []
             }
+        
             
             for landmark_num, landmark in enumerate(results.pose_landmarks.landmark):
                 frame_landmarks['landmarks'].append({
@@ -81,9 +98,10 @@ def analyze_json(video_data):
                     'z': landmark.z,
                     'visibility': landmark.visibility if hasattr(landmark, 'visibility') else None
                 })
-                    
             
             landmarks.append(frame_landmarks)
+        
+            data['frames'].append(frame_landmarks)
         
     output = "temp/output.mp4"
     out = cv2.VideoWriter(
@@ -101,6 +119,6 @@ def analyze_json(video_data):
     landmarks_file = "temp/landmarks.json"
     
     with open(landmarks_file, 'w') as json_file:
-        json.dump(landmarks, json_file, indent = 2)
+        json.dump(data, json_file, indent = 2)
     
     return landmarks, output

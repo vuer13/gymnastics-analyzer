@@ -29,3 +29,6 @@ __pycache__/
 temp/
 test.py
 *.mp4
+*.json
+test2.py
+results/
