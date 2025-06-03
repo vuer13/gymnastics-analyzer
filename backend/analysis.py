@@ -48,17 +48,19 @@ def analyze_json(video_data):
     with open(file_path, 'wb') as f:
         f.write(video_data)
         
-    mp_pose_inst = mp_pose.Pose(static_image_mode = False, min_detection_confidence = 0.5, model_complexity = 1)
+    mp_pose_inst = mp_pose.Pose(static_image_mode = False, min_detection_confidence = 0.55, model_complexity = 1)
     
     video_array = video_to_numpy(file_path)
     
     frames = []
     landmarks = []
-    
-    fps = 30
-    
+        
     cap = cv2.VideoCapture(file_path)
-
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    
+    if fps == 0 or np.isnan(fps):
+        fps = 30
+    
     if cap.isOpened():
         width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -77,12 +79,16 @@ def analyze_json(video_data):
     for frame_num, frame in enumerate(video_array):
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = mp_pose_inst.process(rgb_frame)
-        time = frame_num / 30
+        time = frame_num / fps
         
         if results.pose_landmarks:
             annotated_frame = draw_landmarks(rgb_frame, results)
-            frames.append(annotated_frame)
+        else:
+            annotated_frame = cv2.cvtColor(rgb_frame, cv2.COLOR_RGB2BGR)
             
+        frames.append(annotated_frame)
+            
+        if results.pose_landmarks:
             frame_landmarks = {
                 'frame_num': frame_num,
                 'time': time,
@@ -107,7 +113,7 @@ def analyze_json(video_data):
     out = cv2.VideoWriter(
         output,
         cv2.VideoWriter_fourcc(*'mp4v'),
-        30,
+        fps,
         (frames[0].shape[1], frames[0].shape[0])
     )
     
