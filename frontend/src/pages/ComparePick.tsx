@@ -34,7 +34,7 @@ const ComparePick = () => {
             Floor: ["Mitchell", "Silivas", "Full Routine"],
             Vault: ["Baitova"]
         }
-        // More to be added
+        // More to be added; athletes and moves, need to find more of Jordan Chiles; maybe try to add to a NOSQL database
     }
 
     const apparatusOptions = athlete ? Object.keys(athleteData[athlete]) : [];
